@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'self' https://vonpgqcn.manus.space https://vonpgqcn.usercontents.app">
+    <!-- Content Security Policy moved to HTTP headers for better security -->
     <title>Visual Perception - Visual Adaptation Quiz</title>
     <style>
         :root {
@@ -378,30 +378,62 @@
             const feedbackText = document.getElementById('feedback-text');
             const explanation = document.getElementById('explanation');
             
+            // Make sure UI elements are accessible
+            if (!submitBtn || !feedback || !feedbackText || !explanation) {
+                console.error('Error: One or more UI elements not found');
+                return;
+            }
+            
             submitBtn.addEventListener('click', function() {
-                const lightAdaptation = document.getElementById('light-adaptation').value;
-                const darkAdaptation = document.getElementById('dark-adaptation').value;
-                const chromaticAdaptation = document.getElementById('chromatic-adaptation').value;
-                
-                if (!lightAdaptation || !darkAdaptation || !chromaticAdaptation) {
-                    alert('Please complete all matching items before submitting.');
-                    return;
+                try {
+                    const lightAdaptationSelect = document.getElementById('light-adaptation');
+                    const darkAdaptationSelect = document.getElementById('dark-adaptation');
+                    const chromaticAdaptationSelect = document.getElementById('chromatic-adaptation');
+                    
+                    // Check if all select elements exist
+                    if (!lightAdaptationSelect || !darkAdaptationSelect || !chromaticAdaptationSelect) {
+                        console.error('Error: One or more select elements not found');
+                        alert('There was an error with the form. Please refresh the page and try again.');
+                        return;
+                    }
+                    
+                    const lightAdaptation = lightAdaptationSelect.value;
+                    const darkAdaptation = darkAdaptationSelect.value;
+                    const chromaticAdaptation = chromaticAdaptationSelect.value;
+                    
+                    if (!lightAdaptation || !darkAdaptation || !chromaticAdaptation) {
+                        alert('Please complete all matching items before submitting.');
+                        return;
+                    }
+                    
+                    // Correct answers: Light Adaptation = b, Dark Adaptation = c, Chromatic Adaptation = a
+                    const isCorrect = lightAdaptation === 'b' && darkAdaptation === 'c' && chromaticAdaptation === 'a';
+                    
+                    // Count individual correct answers
+                    const correctCount = [
+                        lightAdaptation === 'b', 
+                        darkAdaptation === 'c', 
+                        chromaticAdaptation === 'a'
+                    ].filter(Boolean).length;
+                    
+                    if (isCorrect) {
+                        feedback.className = 'feedback correct';
+                        feedbackText.textContent = 'Correct! All matches are correct.';
+                        explanation.textContent = 'Light adaptation is the process of adjusting to bright environments, which involves the deactivation of rod cells and the constriction of the pupil. Dark adaptation is the adjustment to dim environments, involving the activation of rod cells and dilation of the pupil. Chromatic adaptation allows our visual system to adjust to different lighting conditions with various color temperatures, helping us perceive colors consistently.';
+                    } else {
+                        feedback.className = 'feedback incorrect';
+                        feedbackText.textContent = `Some matches are incorrect. You got ${correctCount} out of 3 correct.`;
+                        explanation.textContent = 'Light adaptation (b) is the adjustment when moving from dark to bright environments. Dark adaptation (c) is the adjustment when moving from bright to dark environments. Chromatic adaptation (a) is the process where color perception changes based on the dominant wavelength of light.';
+                    }
+                    
+                    feedback.style.display = 'block';
+                    
+                    // Scroll to feedback
+                    feedback.scrollIntoView({ behavior: 'smooth' });
+                } catch (error) {
+                    console.error('Error in submit handler:', error);
+                    alert('There was an error processing your answers. Please try again.');
                 }
-                
-                // Correct answers: Light Adaptation = b, Dark Adaptation = c, Chromatic Adaptation = a
-                const isCorrect = lightAdaptation === 'b' && darkAdaptation === 'c' && chromaticAdaptation === 'a';
-                
-                if (isCorrect) {
-                    feedback.className = 'feedback correct';
-                    feedbackText.textContent = 'Correct! All matches are correct.';
-                    explanation.textContent = 'Light adaptation is the process of adjusting to bright environments, which involves the deactivation of rod cells and the constriction of the pupil. Dark adaptation is the adjustment to dim environments, involving the activation of rod cells and dilation of the pupil. Chromatic adaptation allows our visual system to adjust to different lighting conditions with various color temperatures, helping us perceive colors consistently.';
-                } else {
-                    feedback.className = 'feedback incorrect';
-                    feedbackText.textContent = 'Some matches are incorrect. Please try again.';
-                    explanation.textContent = 'Light adaptation (b) is the adjustment when moving from dark to bright environments. Dark adaptation (c) is the adjustment when moving from bright to dark environments. Chromatic adaptation (a) is the process where color perception changes based on the dominant wavelength of light.';
-                }
-                
-                feedback.style.display = 'block';
             });
         });
     </script>
