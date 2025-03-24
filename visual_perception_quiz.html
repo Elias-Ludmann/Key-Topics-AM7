@@ -473,4 +473,109 @@
                     <div style="text-align: right; margin-top: 10px;">
                         <a href="stevens_power_law_quiz.html" style="color: var(--secondary-color); font-size: 0.9rem;">Practice this topic →</a>
                     </div>
-                 <response clipped><NOTE>To save on context only part of this file has been shown to you. You should retry this tool after you have searched inside the file with `grep -n` in order to find the line numbers of what you are looking for.</NOTE>
+                </div>
+                
+                <button type="button" class="submit-btn" id="submit-btn">Submit Answers</button>
+                
+                <div class="feedback" id="feedback">
+                    <h3>Feedback</h3>
+                    <p id="feedback-text"></p>
+                    <p id="explanation"></p>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About</h3>
+                <p>This interactive learning platform is designed for first-semester students in Audiovisuelle Medien at Hochschule der Medien.</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#">Modules</a></li>
+                    <li><a href="#">Learning Paths</a></li>
+                    <li><a href="#">Resources</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>HdM Resources</h3>
+                <ul>
+                    <li><a href="https://www.hdm-stuttgart.de/" target="_blank">HdM Website</a></li>
+                    <li><a href="https://www.hdm-stuttgart.de/studienangebot/studiengaenge/steckbrief?sgang_ID=550013" target="_blank">Audiovisuelle Medien</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>&copy; 2025 Audiovisuelle Medien Learning Hub | Hochschule der Medien Stuttgart</p>
+        </div>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const submitBtn = document.getElementById('submit-btn');
+            const feedback = document.getElementById('feedback');
+            const feedbackText = document.getElementById('feedback-text');
+            const explanation = document.getElementById('explanation');
+            
+            submitBtn.addEventListener('click', function() {
+                // Check if at least one option is selected for each question
+                const q1Selected = document.querySelector('input[name="q1"]:checked');
+                const q2Selected = document.querySelector('input[name="q2"]:checked');
+                const q3Selected = document.querySelector('input[name="q3"]:checked');
+                const q4aSelected = document.querySelector('select[name="q4a"]').value;
+                const q4bSelected = document.querySelector('select[name="q4b"]').value;
+                const q4cSelected = document.querySelector('select[name="q4c"]').value;
+                const q5Selected = document.querySelector('input[name="q5"]:checked');
+                
+                if (!q1Selected || !q2Selected || !q3Selected || !q4aSelected || !q4bSelected || !q4cSelected || !q5Selected) {
+                    alert('Please answer all questions before submitting.');
+                    return;
+                }
+                
+                // Calculate score
+                let score = 0;
+                let total = 5; // Total number of questions/scores
+                
+                // Check answers
+                if (q1Selected.value === 'b') score++;
+                if (q2Selected.value === 'b') score++;
+                if (q3Selected.value === 'c') score++;
+                
+                // Check matching question as one unit
+                if (q4aSelected === 'b' && q4bSelected === 'c' && q4cSelected === 'a') score++;
+                
+                if (q5Selected.value === 'c') score++;
+                
+                // Display feedback
+                const percentage = (score / total) * 100;
+                
+                if (percentage >= 80) {
+                    feedback.className = 'feedback correct';
+                    feedbackText.textContent = `Excellent! Your score: ${score}/${total} (${percentage}%)`;
+                    explanation.textContent = 'You have a solid understanding of visual perception concepts. Explore the individual topic quizzes for more in-depth practice.';
+                } else if (percentage >= 60) {
+                    feedback.className = 'feedback correct';
+                    feedbackText.textContent = `Good job! Your score: ${score}/${total} (${percentage}%)`;
+                    explanation.textContent = 'You understand most visual perception concepts. Consider reviewing the topics you missed using the individual quiz pages.';
+                } else {
+                    feedback.className = 'feedback incorrect';
+                    feedbackText.textContent = `Your score: ${score}/${total} (${percentage}%)`;
+                    explanation.textContent = 'You might benefit from reviewing the visual perception concepts. Use the individual topic quizzes to focus on specific areas.';
+                }
+                
+                feedback.style.display = 'block';
+                
+                // Scroll to feedback
+                feedback.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>
