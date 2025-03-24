@@ -334,10 +334,15 @@
                     <h3>Interactive Metamerism Demonstration</h3>
                     
                     <div class="metamerism-demo">
-                        <!-- Note: Image path may need to be updated to your actual image location -->
-                        <img src="B AVT 20 Wahrnehmung - Metamerismus (c) David Long.png" alt="Metamerism demonstration showing spectral distributions" class="demo-image">
+                        <div style="border: 1px dashed #ccc; padding: 20px; margin: 15px 0; text-align: center; background-color: #f8f9fa;">
+                            <p><strong>Image Description:</strong> Comparison of spectral distributions showing metamerism effect. The real card spectral distribution (represented by a red line) is relatively smooth, while the spectral distribution of the monitor display (represented by a purple line) shows characteristic spikes from the RGB primaries.</p>
+                            <p><small>Image description based on: Spectral distributions courtesy of David Long (RIT).</small></p>
+                        </div>
                         
                         <div class="demo-controls">
+                            <div style="font-style: italic; margin-bottom: 10px; color: #666;">
+                                These buttons would control the display of different spectral distributions in the interactive demonstration.
+                            </div>
                             <button class="demo-btn" id="show-real">Show Real Card Spectrum</button>
                             <button class="demo-btn" id="show-monitor">Show Monitor Spectrum</button>
                             <button class="demo-btn" id="show-both">Show Both Spectra</button>
@@ -407,25 +412,36 @@
             const showRealBtn = document.getElementById('show-real');
             const showMonitorBtn = document.getElementById('show-monitor');
             const showBothBtn = document.getElementById('show-both');
-            const demoImage = document.querySelector('.demo-image');
+            const demoDescription = document.querySelector('.demo-description');
             
-            // Store the original image source
-            const originalImageSrc = demoImage.src;
-            
-            // In a real implementation, we would have separate images for each view
-            // For this demo, we'll just simulate the functionality
+            // Since we don't have actual images, we'll update the description text
             
             showRealBtn.addEventListener('click', function() {
-                alert('In a full implementation, this would show only the real card spectral distribution (red line).');
+                demoDescription.innerHTML = `
+                    <div style="padding: 10px; background-color: #f9f2f4; border-left: 4px solid #c7254e; margin-bottom: 15px;">
+                        <p><strong>Real Card Spectrum View:</strong> This would show only the real card spectral distribution as a relatively smooth red line across the visible spectrum.</p>
+                    </div>
+                    <p><strong>Yellow metamerism:</strong> The real card's spectral distribution is continuous and relatively smooth, which is how reflected light typically appears in nature.</p>
+                    <p><small>Spectral distributions and image courtesy of David Long (RIT).</small></p>
+                `;
             });
             
             showMonitorBtn.addEventListener('click', function() {
-                alert('In a full implementation, this would show only the monitor spectral distribution (purple line).');
+                demoDescription.innerHTML = `
+                    <div style="padding: 10px; background-color: #f9f2f4; border-left: 4px solid #9954bb; margin-bottom: 15px;">
+                        <p><strong>Monitor Spectrum View:</strong> This would show only the monitor spectral distribution as a purple line with distinct spikes at the RGB primary wavelengths.</p>
+                    </div>
+                    <p><strong>Yellow metamerism:</strong> The monitor reproduces the same perceived yellow color using only its RGB primaries, resulting in a spectral distribution with characteristic spikes rather than a smooth curve.</p>
+                    <p><small>Spectral distributions and image courtesy of David Long (RIT).</small></p>
+                `;
             });
             
             showBothBtn.addEventListener('click', function() {
-                // Reset to original image showing both spectra
-                demoImage.src = originalImageSrc;
+                // Reset to original description
+                demoDescription.innerHTML = `
+                    <p><strong>Yellow metamerism:</strong> This demonstration shows two metameric spectral distributions producing the same color stimuli (metamers) even though the spectral distributions are radically different. The real card spectral distribution (red line) is relatively smooth while the spectral distribution of the picture of the card displayed on the monitor (purple line) exhibits spikes from the monitor primaries.</p>
+                    <p><small>Spectral distributions and image courtesy of David Long (RIT).</small></p>
+                `;
             });
         });
     </script>
