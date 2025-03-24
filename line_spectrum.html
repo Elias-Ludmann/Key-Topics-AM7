@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Content Security Policy moved to HTTP headers for better security -->
+    <title>Signal Processing - Line Spectrum Characteristics</title>
+    <style>
+        :root {
+            --primary-color: #1A365D;
+            --secondary-color: #2A9D8F;
+            --accent-color: #F4A261;
+            --background-color: #F8F9FA;
+            --text-color: #333333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .module-header {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+        }
+        
+        .module-header h1 {
+            font-family: 'Montserrat', sans-serif;
+            margin-bottom: 1rem;
+        }
+        
+        .module-content {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: 2rem;
+        }
+        
+        .sidebar {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+        
+        .sidebar h3 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        
+        .topic-list {
+            list-style: none;
+        }
+        
+        .topic-list li {
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .topic-list li:hover {
+            background-color: var(--background-color);
+        }
+        
+        .topic-list li.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .topic-list a {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .main-content {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .main-content h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        
+        .main-content p {
+            margin-bottom: 1.5rem;
+        }
+        
+        .main-content ul, .main-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .main-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .demo-container {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background-color: var(--background-color);
+            border-radius: 10px;
+        }
+        
+        .demo-container h3 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .nav-btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .nav-btn:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .image-placeholder {
+            border: 1px dashed #ccc;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: center;
+            background-color: #f8f9fa;
+        }
+        
+        .math-formula {
+            font-family: 'Times New Roman', serif;
+            text-align: center;
+            margin: 1.5rem 0;
+            font-size: 1.2rem;
+        }
+        
+        .formula-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid var(--secondary-color);
+            padding: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-section h3 {
+            font-family: 'Montserrat', sans-serif;
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-section a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .footer-section a:hover {
+            text-decoration: underline;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .module-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">AVMedia Hub</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#">Modules</a></li>
+                <li><a href="#">Learning Paths</a></li>
+                <li><a href="#">Resources</a></li>
+                <li><a href="#">Dashboard</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <div class="module-header">
+            <h1>Module 3: Signal Processing Fundamentals</h1>
+            <p>Learn the mathematical foundations of signal processing essential for understanding audio and video systems.</p>
+        </div>
+        
+        <div class="module-content">
+            <aside class="sidebar">
+                <h3>Module Topics</h3>
+                <ul class="topic-list">
+                    <li><a href="signals_intro.html">Introduction to Signals</a></li>
+                    <li><a href="periodic_signals.html">Periodic Signals and Waveforms</a></li>
+                    <li><a href="harmonics_overtones.html">Harmonics and Overtones</a></li>
+                    <li><a href="fourier_demo.html">Fourier Transform</a></li>
+                    <li><a href="frequency_spectrum.html">Frequency Spectrum Analysis</a></li>
+                    <li class="active"><a href="line_spectrum.html">Line Spectrum Characteristics</a></li>
+                    <li><a href="rectangular_impulses.html">Rectangular Impulses</a></li>
+                    <li><a href="signal_processing_quiz.html">Module Quiz</a></li>
+                </ul>
+            </aside>
+            
+            <main class="main-content">
+                <h2>Line Spectrum Characteristics</h2>
+                
+                <p>A line spectrum, also known as a discrete spectrum, is a frequency-domain representation of a periodic signal where the signal energy is concentrated at discrete frequencies. This type of spectrum is characterized by distinct "lines" appearing at specific frequencies, unlike a continuous spectrum where energy is distributed across a continuous range of frequencies.</p>
+                
+                <h3>Characteristics of Line Spectra</h3>
+                
+                <p>Line spectra have several key characteristics that distinguish them from continuous spectra:</p>
+                
+                <h4>1. Discrete Frequency Components</h4>
+                <p>Line spectra consist of distinct spectral lines at specific frequencies, usually at integer multiples of a fundamental frequency (f₀). These lines represent the harmonic components of a periodic signal.</p>
+                
+                <div class="image-placeholder">
+                    <p><strong>Image Description:</strong> A line spectrum showing distinct spectral lines at 100 Hz, 200 Hz, 300 Hz, etc., with varying amplitudes</p>
+                    <p><small>Note: This represents where an image of a line spectrum would appear.</small></p>
+                </div>
+                
+                <h4>2. Relationship to Periodicity</h4>
+                <p>The presence of a line spectrum is a direct indication of a signal's periodicity. According to Fourier series theory, any periodic signal can be represented as a sum of harmonically related sinusoids, each appearing as a line in the frequency spectrum.</p>
+                
+                <div class="formula-box">
+                    <p>For a periodic signal with period T:</p>
+                    <div class="math-formula">
+                        <p>x(t) = Σ(A<sub>n</sub> cos(2πnf₀t + φ<sub>n</sub>))</p>
+                    </div>
+                    <p>Where f₀ = 1/T is the fundamental frequency, A<sub>n</sub> is the amplitude of the nth harmonic, and φ<sub>n</sub> is its phase.</p>
+                </div>
+                
+                <h4>3. Spacing of Spectral Lines</h4>
+                <p>In a line spectrum, the spacing between adjacent spectral lines is equal to the fundamental frequency (f₀) of the periodic signal. This spacing is inversely proportional to the period of the signal in the time domain.</p>
+                
+                <div class="math-formula">
+                    <p>Frequency spacing = f₀ = 1/T</p>
+                </div>
+                
+                <h4>4. Amplitude and Phase Information</h4>
+                <p>Each spectral line carries both amplitude and phase information:</p>
+                <ul>
+                    <li>The <strong>amplitude</strong> of each line indicates the strength of that frequency component in the original signal.</li>
+                    <li>The <strong>phase</strong> of each line represents the time alignment or phase shift of that component relative to a reference.</li>
+                </ul>
+                
+                <h3>Line Spectra of Common Waveforms</h3>
+                
+                <p>Different periodic waveforms have characteristic line spectra that reflect their harmonic content:</p>
+                
+                <h4>Sine Wave</h4>
+                <p>A pure sine wave has the simplest line spectrum—a single line at the fundamental frequency.</p>
+                <div class="image-placeholder">
+                    <p><strong>Image Description:</strong> Line spectrum of a sine wave showing a single spectral line at its frequency</p>
+                    <p><small>Note: This represents where a spectrum image would appear.</small></p>
+                </div>
+                
+                <h4>Square Wave</h4>
+                <p>A square wave contains only odd harmonics, with amplitudes that decrease proportionally to 1/n (where n is the harmonic number).</p>
+                <div class="formula-box">
+                    <p>Square wave Fourier series:</p>
+                    <div class="math-formula">
+                        <p>x(t) = (4A/π) × Σ(sin(2π(2k-1)f₀t)/(2k-1))</p>
+                    </div>
+                    <p>Where k starts at 1 and includes only odd harmonics.</p>
+                </div>
+                <div class="image-placeholder">
+                    <p><strong>Image Description:</strong> Line spectrum of a square wave showing odd harmonics with decreasing amplitudes</p>
+                    <p><small>Note: This represents where a spectrum image would appear.</small></p>
+                </div>
+                
+                <h4>Sawtooth Wave</h4>
+                <p>A sawtooth wave contains all harmonics (both odd and even), with amplitudes that decrease proportionally to 1/n.</p>
+                <div class="formula-box">
+                    <p>Sawtooth wave Fourier series:</p>
+                    <div class="math-formula">
+                        <p>x(t) = (2A/π) × Σ((-1)^(n+1) × sin(2πnf₀t)/n)</p>
+                    </div>
+                    <p>Where n includes all integers from 1 to infinity.</p>
+                </div>
+                <div class="image-placeholder">
+                    <p><strong>Image Description:</strong> Line spectrum of a sawtooth wave showing all harmonics with decreasing amplitudes</p>
+                    <p><small>Note: This represents where a spectrum image would appear.</small></p>
+                </div>
+                
+                <h3>Line Spectrum Analysis in Audio</h3>
+                
+                <p>In audio processing, line spectrum analysis provides valuable insights about sound sources:</p>
+                
+                <h4>Musical Instruments</h4>
+                <p>Each musical instrument produces a characteristic line spectrum that contributes to its unique timbre. For example:</p>
+                <ul>
+                    <li><strong>String instruments</strong> typically have strong even harmonics</li>
+                    <li><strong>Wind instruments</strong> often emphasize certain harmonics based on their construction</li>
+                    <li><strong>Percussive instruments</strong> may have inharmonic components (spectral lines that are not integer multiples of the fundamental)</li>
+                </ul>
+                
+                <h4>Voice Analysis</h4>
+                <p>Human voice produces a line spectrum with specific formant frequencies that are characteristic of different vowel sounds. These formants appear as groups of enhanced harmonics in specific frequency regions.</p>
+                
+                <div class="image-placeholder">
+                    <p><strong>Image Description:</strong> Line spectra of different vowel sounds showing different formant patterns</p>
+                    <p><small>Note: This represents where a spectrum image would appear.</small></p>
+                </div>
+                
+                <h3>Applications in Signal Processing</h3>
+                
+                <h4>Signal Identification</h4>
+                <p>The distinctive pattern of spectral lines can be used to identify specific signals or sound sources, forming the basis for audio fingerprinting and music recognition systems.</p>
+                
+                <h4>Audio Synthesis</h4>
+                <p>Understanding line spectra enables precise additive synthesis, where complex sounds are created by combining sinusoidal components at specific frequencies and amplitudes.</p>
+                
+                <h4>Filtering and Equalization</h4>
+                <p>Line spectrum analysis helps in designing filters that target specific frequency components while leaving others unaffected, enabling precise audio equalization.</p>
+                
+                <h4>Audio Compression</h4>
+                <p>Many audio compression algorithms analyze the line spectrum to identify perceptually important components that should be preserved and less important ones that can be discarded.</p>
+                
+                <h3>Limitations and Practical Considerations</h3>
+                
+                <p>When working with line spectra in real-world applications, several considerations should be kept in mind:</p>
+                
+                <ul>
+                    <li><strong>Spectral leakage:</strong> In practical digital signal processing, windowing effects can cause energy from a strong spectral line to "leak" into adjacent frequency bins</li>
+                    <li><strong>Resolution limitations:</strong> The ability to distinguish closely spaced spectral lines depends on the frequency resolution, which is limited by the duration of the analyzed signal</li>
+                    <li><strong>Time-varying spectra:</strong> Many real-world signals have spectra that change over time, requiring time-frequency analysis techniques</li>
+                </ul>
+                
+                <div class="navigation-buttons">
+                    <a href="frequency_spectrum.html" class="nav-btn">← Previous: Frequency Spectrum Analysis</a>
+                    <a href="rectangular_impulses.html" class="nav-btn">Next: Rectangular Impulses →</a>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About</h3>
+                <p>This interactive learning platform is designed for first-semester students in Audiovisuelle Medien at Hochschule der Medien.</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#">Modules</a></li>
+                    <li><a href="#">Learning Paths</a></li>
+                    <li><a href="#">Resources</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>HdM Resources</h3>
+                <ul>
+                    <li><a href="https://www.hdm-stuttgart.de/" target="_blank">HdM Website</a></li>
+                    <li><a href="https://www.hdm-stuttgart.de/studienangebot/studiengaenge/steckbrief?sgang_ID=550013" target="_blank">Audiovisuelle Medien</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>&copy; 2025 Audiovisuelle Medien Learning Hub | Hochschule der Medien Stuttgart</p>
+        </div>
+    </footer>
+</body>
+</html>

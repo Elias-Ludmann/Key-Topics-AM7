@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'self' https://vonpgqcn.manus.space https://vonpgqcn.usercontents.app">
-    <title>Signal Processing - Fourier Transform Demo</title>
+    <!-- Content Security Policy moved to HTTP headers for better security -->
+    <title>Signal Processing - Introduction to Signals</title>
     <style>
         :root {
             --primary-color: #1A365D;
@@ -154,6 +154,15 @@
             margin-bottom: 1.5rem;
         }
         
+        .main-content ul, .main-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .main-content li {
+            margin-bottom: 0.5rem;
+        }
+        
         .demo-container {
             margin: 2rem 0;
             padding: 1.5rem;
@@ -165,81 +174,6 @@
             font-family: 'Montserrat', sans-serif;
             color: var(--primary-color);
             margin-bottom: 1rem;
-        }
-        
-        .fourier-demo {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .demo-canvas {
-            width: 100%;
-            height: 300px;
-            background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1.5rem;
-        }
-        
-        .demo-controls {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            width: 100%;
-            margin-bottom: 1.5rem;
-        }
-        
-        .control-group {
-            background-color: white;
-            padding: 1rem;
-            border-radius: 5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .control-group h4 {
-            font-family: 'Montserrat', sans-serif;
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
-        }
-        
-        .control-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-        
-        .control-group input[type="range"] {
-            width: 100%;
-        }
-        
-        .control-group input[type="number"] {
-            width: 60px;
-            padding: 0.3rem;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-        }
-        
-        .demo-btn {
-            padding: 0.5rem 1rem;
-            background-color: var(--secondary-color);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-top: 0.5rem;
-        }
-        
-        .demo-btn:hover {
-            background-color: var(--primary-color);
-        }
-        
-        .demo-description {
-            background-color: white;
-            padding: 1.5rem;
-            border-radius: 5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
         .navigation-buttons {
@@ -260,6 +194,14 @@
         
         .nav-btn:hover {
             background-color: var(--secondary-color);
+        }
+        
+        .image-placeholder {
+            border: 1px dashed #ccc;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: center;
+            background-color: #f8f9fa;
         }
         
         footer {
@@ -348,10 +290,10 @@
             <aside class="sidebar">
                 <h3>Module Topics</h3>
                 <ul class="topic-list">
-                    <li><a href="signals_intro.html">Introduction to Signals</a></li>
+                    <li class="active"><a href="signals_intro.html">Introduction to Signals</a></li>
                     <li><a href="periodic_signals.html">Periodic Signals and Waveforms</a></li>
                     <li><a href="harmonics_overtones.html">Harmonics and Overtones</a></li>
-                    <li class="active"><a href="fourier_demo.html">Fourier Transform</a></li>
+                    <li><a href="fourier_demo.html">Fourier Transform</a></li>
                     <li><a href="frequency_spectrum.html">Frequency Spectrum Analysis</a></li>
                     <li><a href="line_spectrum.html">Line Spectrum Characteristics</a></li>
                     <li><a href="rectangular_impulses.html">Rectangular Impulses</a></li>
@@ -360,76 +302,90 @@
             </aside>
             
             <main class="main-content">
-                <h2>Fourier Transform</h2>
+                <h2>Introduction to Signals</h2>
                 
-                <p>The Fourier Transform is a mathematical technique that decomposes a signal into its constituent frequencies. Named after the French mathematician Jean-Baptiste Joseph Fourier, this transform is fundamental to understanding how complex signals can be represented as a sum of simple sinusoidal components.</p>
+                <p>A signal is a function that conveys information about a phenomenon. In the context of audiovisual media, signals are the fundamental carriers of information that we want to capture, process, transmit, and reproduce.</p>
                 
-                <p>In audio and video processing, the Fourier Transform allows us to convert signals from the time domain (how the signal changes over time) to the frequency domain (what frequencies are present in the signal). This transformation provides insights into the spectral content of signals, which is crucial for tasks like filtering, compression, and analysis.</p>
+                <h3>What are Signals?</h3>
                 
-                <div class="demo-container">
-                    <h3>Interactive Fourier Transform Demonstration</h3>
-                    
-                    <div class="fourier-demo">
-                        <canvas id="fourierCanvas" class="demo-canvas"></canvas>
-                        
-                        <div class="demo-controls">
-                            <div class="control-group">
-                                <h4>Waveform Type</h4>
-                                <select id="waveformType" class="demo-select">
-                                    <option value="sine">Sine Wave</option>
-                                    <option value="square">Square Wave</option>
-                                    <option value="sawtooth">Sawtooth Wave</option>
-                                    <option value="triangle">Triangle Wave</option>
-                                </select>
-                                <button id="updateWaveform" class="demo-btn">Update Waveform</button>
-                            </div>
-                            
-                            <div class="control-group">
-                                <h4>Fundamental Frequency</h4>
-                                <label>
-                                    Frequency: <input type="range" id="frequencySlider" min="1" max="20" value="1">
-                                    <span id="frequencyValue">1 Hz</span>
-                                </label>
-                            </div>
-                            
-                            <div class="control-group">
-                                <h4>Harmonics</h4>
-                                <label>
-                                    Number of Harmonics: <input type="range" id="harmonicsSlider" min="1" max="20" value="5">
-                                    <span id="harmonicsValue">5</span>
-                                </label>
-                            </div>
-                            
-                            <div class="control-group">
-                                <h4>View Options</h4>
-                                <label><input type="checkbox" id="showTimeView" checked> Show Time Domain</label>
-                                <label><input type="checkbox" id="showFreqView" checked> Show Frequency Domain</label>
-                            </div>
-                        </div>
-                        
-                        <div class="demo-description">
-                            <p>This interactive demonstration allows you to explore how different waveforms can be decomposed into their frequency components using the Fourier Transform. Adjust the parameters to see how changes in the time domain affect the frequency spectrum and vice versa.</p>
-                            <p>The top graph shows the signal in the time domain, while the bottom graph displays its frequency spectrum. Notice how complex waveforms like square and sawtooth waves require more harmonics to accurately represent their shape.</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <h3>Applications in Audiovisual Media</h3>
-                
-                <p>The Fourier Transform has numerous applications in audiovisual media:</p>
+                <p>Signals are mathematical functions that represent physical quantities varying over time, space, or another independent variable. In audiovisual applications, we commonly work with:</p>
                 
                 <ul>
-                    <li><strong>Audio Processing:</strong> Equalizers, filters, and effects processors use the Fourier Transform to manipulate specific frequency components of audio signals.</li>
-                    <li><strong>Image Processing:</strong> The 2D Fourier Transform is used for image filtering, compression (like JPEG), and pattern recognition.</li>
-                    <li><strong>Video Compression:</strong> Modern video codecs use transforms similar to the Fourier Transform (like the Discrete Cosine Transform) to compress video data efficiently.</li>
-                    <li><strong>Spectral Analysis:</strong> Analyzing the frequency content of sounds helps in identifying instruments, voices, and acoustic properties of environments.</li>
+                    <li><strong>Audio signals:</strong> Represent sound pressure variations over time</li>
+                    <li><strong>Video signals:</strong> Represent light intensity and color variations over spatial coordinates and time</li>
                 </ul>
                 
-                <p>Understanding the Fourier Transform provides a powerful framework for analyzing and processing signals in various domains of audiovisual media production.</p>
+                <div class="image-placeholder">
+                    <p><strong>Image Description:</strong> Various signal types shown in time domain - including sine wave, square wave, triangular wave, and complex audio waveform</p>
+                    <p><small>Note: This represents where an image of different signal types would appear.</small></p>
+                </div>
+                
+                <h3>Signal Classification</h3>
+                
+                <p>Signals can be classified in several ways:</p>
+                
+                <h4>Continuous-Time vs. Discrete-Time Signals</h4>
+                <ul>
+                    <li><strong>Continuous-time signals:</strong> Defined for every instant of time (e.g., analog audio signal)</li>
+                    <li><strong>Discrete-time signals:</strong> Defined only at specific times (e.g., digital audio samples)</li>
+                </ul>
+                
+                <h4>Continuous-Valued vs. Discrete-Valued Signals</h4>
+                <ul>
+                    <li><strong>Continuous-valued:</strong> Can take any value within a range</li>
+                    <li><strong>Discrete-valued:</strong> Can only take specific values (e.g., quantized digital signals)</li>
+                </ul>
+                
+                <h4>Deterministic vs. Random Signals</h4>
+                <ul>
+                    <li><strong>Deterministic:</strong> Can be described by a mathematical function (e.g., sine wave)</li>
+                    <li><strong>Random:</strong> Cannot be precisely predicted and are described statistically (e.g., noise)</li>
+                </ul>
+                
+                <h3>Basic Signal Parameters</h3>
+                
+                <p>Understanding signals requires familiarity with several key parameters:</p>
+                
+                <ul>
+                    <li><strong>Amplitude:</strong> The maximum deviation of a signal from its mean value</li>
+                    <li><strong>Frequency:</strong> The number of complete cycles per second (measured in Hertz, Hz)</li>
+                    <li><strong>Period:</strong> The time taken to complete one cycle (T = 1/frequency)</li>
+                    <li><strong>Phase:</strong> The position of a signal relative to a reference point</li>
+                </ul>
+                
+                <div class="image-placeholder">
+                    <p><strong>Image Description:</strong> Illustration showing amplitude, period, and phase on a sinusoidal wave</p>
+                    <p><small>Note: This represents where an image showing signal parameters would appear.</small></p>
+                </div>
+                
+                <h3>Signal Operations</h3>
+                
+                <p>Several operations can be performed on signals:</p>
+                
+                <ul>
+                    <li><strong>Addition/Subtraction:</strong> Combining signals point by point</li>
+                    <li><strong>Multiplication:</strong> Modulating one signal with another</li>
+                    <li><strong>Time Scaling:</strong> Compressing or expanding the time axis</li>
+                    <li><strong>Time Shifting:</strong> Moving the signal forward or backward in time</li>
+                </ul>
+                
+                <h3>Importance in Audiovisual Media</h3>
+                
+                <p>Signal processing forms the backbone of modern audiovisual media technologies:</p>
+                
+                <ul>
+                    <li>Audio recording and reproduction</li>
+                    <li>Image and video capture and display</li>
+                    <li>Data compression (MP3, JPEG, H.264, etc.)</li>
+                    <li>Filtering and enhancement</li>
+                    <li>Audio-visual effects</li>
+                </ul>
+                
+                <p>In the following lessons, we'll explore different types of signals, their characteristics, and how they're analyzed and processed in audiovisual media applications.</p>
                 
                 <div class="navigation-buttons">
-                    <a href="harmonics_overtones.html" class="nav-btn">← Previous: Harmonics and Overtones</a>
-                    <a href="frequency_spectrum.html" class="nav-btn">Next: Frequency Spectrum →</a>
+                    <a href="index.html" class="nav-btn">← Back to Modules</a>
+                    <a href="periodic_signals.html" class="nav-btn">Next: Periodic Signals and Waveforms →</a>
                 </div>
             </main>
         </div>

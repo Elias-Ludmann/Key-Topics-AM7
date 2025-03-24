@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Content Security Policy moved to HTTP headers for better security -->
+    <title>Signal Processing - Frequency Spectrum Analysis</title>
+    <style>
+        :root {
+            --primary-color: #1A365D;
+            --secondary-color: #2A9D8F;
+            --accent-color: #F4A261;
+            --background-color: #F8F9FA;
+            --text-color: #333333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .module-header {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+        }
+        
+        .module-header h1 {
+            font-family: 'Montserrat', sans-serif;
+            margin-bottom: 1rem;
+        }
+        
+        .module-content {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: 2rem;
+        }
+        
+        .sidebar {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+        
+        .sidebar h3 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        
+        .topic-list {
+            list-style: none;
+        }
+        
+        .topic-list li {
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .topic-list li:hover {
+            background-color: var(--background-color);
+        }
+        
+        .topic-list li.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .topic-list a {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .main-content {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .main-content h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        
+        .main-content p {
+            margin-bottom: 1.5rem;
+        }
+        
+        .main-content ul, .main-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .main-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .demo-container {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background-color: var(--background-color);
+            border-radius: 10px;
+        }
+        
+        .demo-container h3 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .nav-btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .nav-btn:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .image-placeholder {
+            border: 1px dashed #ccc;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: center;
+            background-color: #f8f9fa;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 0.8rem;
+            text-align: left;
+        }
+        
+        .comparison-table th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-section h3 {
+            font-family: 'Montserrat', sans-serif;
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-section a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .footer-section a:hover {
+            text-decoration: underline;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .module-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">AVMedia Hub</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#">Modules</a></li>
+                <li><a href="#">Learning Paths</a></li>
+                <li><a href="#">Resources</a></li>
+                <li><a href="#">Dashboard</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <div class="module-header">
+            <h1>Module 3: Signal Processing Fundamentals</h1>
+            <p>Learn the mathematical foundations of signal processing essential for understanding audio and video systems.</p>
+        </div>
+        
+        <div class="module-content">
+            <aside class="sidebar">
+                <h3>Module Topics</h3>
+                <ul class="topic-list">
+                    <li><a href="signals_intro.html">Introduction to Signals</a></li>
+                    <li><a href="periodic_signals.html">Periodic Signals and Waveforms</a></li>
+                    <li><a href="harmonics_overtones.html">Harmonics and Overtones</a></li>
+                    <li><a href="fourier_demo.html">Fourier Transform</a></li>
+                    <li class="active"><a href="frequency_spectrum.html">Frequency Spectrum Analysis</a></li>
+                    <li><a href="line_spectrum.html">Line Spectrum Characteristics</a></li>
+                    <li><a href="rectangular_impulses.html">Rectangular Impulses</a></li>
+                    <li><a href="signal_processing_quiz.html">Module Quiz</a></li>
+                </ul>
+            </aside>
+            
+            <main class="main-content">
+                <h2>Frequency Spectrum Analysis</h2>
+                
+                <p>Frequency spectrum analysis is a powerful technique for examining signals by breaking them down into their constituent frequency components. This approach allows us to understand the frequency content of signals, which is often more revealing than time-domain analysis alone.</p>
+                
+                <h3>What is a Frequency Spectrum?</h3>
+                
+                <p>The frequency spectrum of a signal is a representation of that signal in the frequency domain, showing the distribution of signal energy or amplitude across different frequency components. It's obtained by applying the Fourier Transform to a time-domain signal.</p>
+                
+                <div class="image-placeholder">
+                    <p><strong>Image Description:</strong> Comparison of a complex audio waveform in time domain (top) and its corresponding frequency spectrum (bottom)</p>
+                    <p><small>Note: This represents where an image showing time domain vs. frequency domain would appear.</small></p>
+                </div>
+                
+                <h3>Types of Frequency Spectra</h3>
+                
+                <h4>1. Continuous Spectrum</h4>
+                <p>Non-periodic signals (like speech, music, or noise) have a continuous spectrum, where energy is distributed across a continuous range of frequencies. The Fourier Transform of such signals yields a continuous function of frequency.</p>
+                
+                <h4>2. Discrete Spectrum (Line Spectrum)</h4>
+                <p>Periodic signals (like pure tones or perfect square waves) have a discrete spectrum, where energy is concentrated at specific frequencies that are integer multiples of the fundamental frequency. The Fourier Series of such signals yields a set of discrete frequency components.</p>
+                
+                <h4>3. Mixed Spectrum</h4>
+                <p>Many real-world signals have both continuous and discrete components in their spectrum, reflecting both periodic and aperiodic elements in the signal.</p>
+                
+                <div class="image-placeholder">
+                    <p><strong>Image Description:</strong> Examples of different spectrum types: continuous spectrum (noise), discrete spectrum (pure tone), and mixed spectrum (musical instrument note)</p>
+                    <p><small>Note: This represents where an image of different spectrum types would appear.</small></p>
+                </div>
+                
+                <h3>Spectrum Analysis Methods</h3>
+                
+                <h4>Fast Fourier Transform (FFT)</h4>
+                <p>The Fast Fourier Transform is an efficient algorithm for computing the Discrete Fourier Transform (DFT). It's widely used for spectrum analysis in digital signal processing. The FFT converts a sequence of N complex numbers in the time domain into a sequence of N complex numbers in the frequency domain.</p>
+                
+                <h4>Short-Time Fourier Transform (STFT)</h4>
+                <p>For time-varying signals, the STFT applies the Fourier Transform to short segments of the signal over time, creating a time-frequency representation. This allows visualization of how the frequency content of a signal changes over time.</p>
+                
+                <div class="image-placeholder">
+                    <p><strong>Image Description:</strong> A spectrogram showing how frequency content changes over time in a speech signal</p>
+                    <p><small>Note: This represents where an image of a spectrogram would appear.</small></p>
+                </div>
+                
+                <h4>Wavelet Transform</h4>
+                <p>An alternative to the Fourier Transform that provides better time-frequency resolution, especially for signals with transient features or varying frequency content. Wavelets are finite-duration oscillatory functions that can analyze signals at different scales and positions.</p>
+                
+                <h3>Key Measurements in Spectrum Analysis</h3>
+                
+                <table class="comparison-table">
+                    <tr>
+                        <th>Measurement</th>
+                        <th>Description</th>
+                        <th>Application</th>
+                    </tr>
+                    <tr>
+                        <td>Amplitude Spectrum</td>
+                        <td>Shows the magnitude of each frequency component</td>
+                        <td>Identifying dominant frequencies in a signal</td>
+                    </tr>
+                    <tr>
+                        <td>Phase Spectrum</td>
+                        <td>Shows the phase angle of each frequency component</td>
+                        <td>Understanding timing relationships between components</td>
+                    </tr>
+                    <tr>
+                        <td>Power Spectral Density (PSD)</td>
+                        <td>Describes how power is distributed across frequencies</td>
+                        <td>Analyzing noise, signal strength, and bandwidth</td>
+                    </tr>
+                    <tr>
+                        <td>Cepstrum</td>
+                        <td>Fourier transform of the logarithm of a spectrum</td>
+                        <td>Speech analysis, echo detection, pitch extraction</td>
+                    </tr>
+                </table>
+                
+                <h3>Spectrum Analysis in Audiovisual Media Applications</h3>
+                
+                <h4>Audio Applications</h4>
+                <ul>
+                    <li><strong>Equalizers:</strong> Adjusting specific frequency bands in audio signals</li>
+                    <li><strong>Audio compression:</strong> Identifying perceptually less important frequency components that can be reduced or eliminated</li>
+                    <li><strong>Noise reduction:</strong> Identifying and removing noise components based on their spectral characteristics</li>
+                    <li><strong>Voice recognition:</strong> Analyzing the spectrum to extract features for speech recognition</li>
+                    <li><strong>Audio fingerprinting:</strong> Creating unique signatures of audio content based on spectral patterns</li>
+                </ul>
+                
+                <h4>Video Applications</h4>
+                <ul>
+                    <li><strong>Image compression:</strong> The 2D Fourier Transform is the basis for JPEG compression</li>
+                    <li><strong>Video filtering:</strong> Removing spatial frequency components to reduce noise or blur</li>
+                    <li><strong>Pattern recognition:</strong> Identifying patterns in images based on their frequency characteristics</li>
+                    <li><strong>Feature extraction:</strong> Extracting edges, textures, and other features using spectrum analysis</li>
+                </ul>
+                
+                <h3>Tools for Spectrum Analysis</h3>
+                
+                <p>Several tools are available for spectrum analysis in audio and video processing:</p>
+                
+                <ul>
+                    <li><strong>Spectrum analyzers:</strong> Dedicated hardware or software tools for real-time spectrum analysis</li>
+                    <li><strong>Digital Audio Workstations (DAWs):</strong> Software like Pro Tools, Logic Pro, or Ableton Live with built-in spectrum analysis tools</li>
+                    <li><strong>Programming libraries:</strong> Libraries like NumPy, SciPy, or MATLAB for signal processing and spectrum analysis</li>
+                    <li><strong>Image processing software:</strong> Tools like Adobe Photoshop or GIMP with FFT filtering capabilities</li>
+                </ul>
+                
+                <div class="navigation-buttons">
+                    <a href="fourier_demo.html" class="nav-btn">← Previous: Fourier Transform</a>
+                    <a href="line_spectrum.html" class="nav-btn">Next: Line Spectrum Characteristics →</a>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About</h3>
+                <p>This interactive learning platform is designed for first-semester students in Audiovisuelle Medien at Hochschule der Medien.</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#">Modules</a></li>
+                    <li><a href="#">Learning Paths</a></li>
+                    <li><a href="#">Resources</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>HdM Resources</h3>
+                <ul>
+                    <li><a href="https://www.hdm-stuttgart.de/" target="_blank">HdM Website</a></li>
+                    <li><a href="https://www.hdm-stuttgart.de/studienangebot/studiengaenge/steckbrief?sgang_ID=550013" target="_blank">Audiovisuelle Medien</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>&copy; 2025 Audiovisuelle Medien Learning Hub | Hochschule der Medien Stuttgart</p>
+        </div>
+    </footer>
+</body>
+</html>

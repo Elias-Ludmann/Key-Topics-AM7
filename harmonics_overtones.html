@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'self' https://vonpgqcn.manus.space https://vonpgqcn.usercontents.app">
-    <title>Signal Processing - Fourier Transform Demo</title>
+    <!-- Content Security Policy moved to HTTP headers for better security -->
+    <title>Signal Processing - Harmonics and Overtones</title>
     <style>
         :root {
             --primary-color: #1A365D;
@@ -154,6 +154,15 @@
             margin-bottom: 1.5rem;
         }
         
+        .main-content ul, .main-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .main-content li {
+            margin-bottom: 0.5rem;
+        }
+        
         .demo-container {
             margin: 2rem 0;
             padding: 1.5rem;
@@ -165,81 +174,6 @@
             font-family: 'Montserrat', sans-serif;
             color: var(--primary-color);
             margin-bottom: 1rem;
-        }
-        
-        .fourier-demo {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .demo-canvas {
-            width: 100%;
-            height: 300px;
-            background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1.5rem;
-        }
-        
-        .demo-controls {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            width: 100%;
-            margin-bottom: 1.5rem;
-        }
-        
-        .control-group {
-            background-color: white;
-            padding: 1rem;
-            border-radius: 5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .control-group h4 {
-            font-family: 'Montserrat', sans-serif;
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
-        }
-        
-        .control-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-        
-        .control-group input[type="range"] {
-            width: 100%;
-        }
-        
-        .control-group input[type="number"] {
-            width: 60px;
-            padding: 0.3rem;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-        }
-        
-        .demo-btn {
-            padding: 0.5rem 1rem;
-            background-color: var(--secondary-color);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-top: 0.5rem;
-        }
-        
-        .demo-btn:hover {
-            background-color: var(--primary-color);
-        }
-        
-        .demo-description {
-            background-color: white;
-            padding: 1.5rem;
-            border-radius: 5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
         .navigation-buttons {
@@ -260,6 +194,21 @@
         
         .nav-btn:hover {
             background-color: var(--secondary-color);
+        }
+        
+        .image-placeholder {
+            border: 1px dashed #ccc;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: center;
+            background-color: #f8f9fa;
+        }
+        
+        .math-formula {
+            font-family: 'Times New Roman', serif;
+            text-align: center;
+            margin: 1.5rem 0;
+            font-size: 1.2rem;
         }
         
         footer {
@@ -350,8 +299,8 @@
                 <ul class="topic-list">
                     <li><a href="signals_intro.html">Introduction to Signals</a></li>
                     <li><a href="periodic_signals.html">Periodic Signals and Waveforms</a></li>
-                    <li><a href="harmonics_overtones.html">Harmonics and Overtones</a></li>
-                    <li class="active"><a href="fourier_demo.html">Fourier Transform</a></li>
+                    <li class="active"><a href="harmonics_overtones.html">Harmonics and Overtones</a></li>
+                    <li><a href="fourier_demo.html">Fourier Transform</a></li>
                     <li><a href="frequency_spectrum.html">Frequency Spectrum Analysis</a></li>
                     <li><a href="line_spectrum.html">Line Spectrum Characteristics</a></li>
                     <li><a href="rectangular_impulses.html">Rectangular Impulses</a></li>
@@ -360,76 +309,103 @@
             </aside>
             
             <main class="main-content">
-                <h2>Fourier Transform</h2>
+                <h2>Harmonics and Overtones</h2>
                 
-                <p>The Fourier Transform is a mathematical technique that decomposes a signal into its constituent frequencies. Named after the French mathematician Jean-Baptiste Joseph Fourier, this transform is fundamental to understanding how complex signals can be represented as a sum of simple sinusoidal components.</p>
+                <p>Harmonics and overtones are fundamental concepts in signal processing that help us understand the complex nature of sound and other periodic signals. They explain why different instruments playing the same note sound different, and they are essential for analyzing and synthesizing sounds in audio production.</p>
                 
-                <p>In audio and video processing, the Fourier Transform allows us to convert signals from the time domain (how the signal changes over time) to the frequency domain (what frequencies are present in the signal). This transformation provides insights into the spectral content of signals, which is crucial for tasks like filtering, compression, and analysis.</p>
+                <h3>What are Harmonics?</h3>
                 
-                <div class="demo-container">
-                    <h3>Interactive Fourier Transform Demonstration</h3>
-                    
-                    <div class="fourier-demo">
-                        <canvas id="fourierCanvas" class="demo-canvas"></canvas>
-                        
-                        <div class="demo-controls">
-                            <div class="control-group">
-                                <h4>Waveform Type</h4>
-                                <select id="waveformType" class="demo-select">
-                                    <option value="sine">Sine Wave</option>
-                                    <option value="square">Square Wave</option>
-                                    <option value="sawtooth">Sawtooth Wave</option>
-                                    <option value="triangle">Triangle Wave</option>
-                                </select>
-                                <button id="updateWaveform" class="demo-btn">Update Waveform</button>
-                            </div>
-                            
-                            <div class="control-group">
-                                <h4>Fundamental Frequency</h4>
-                                <label>
-                                    Frequency: <input type="range" id="frequencySlider" min="1" max="20" value="1">
-                                    <span id="frequencyValue">1 Hz</span>
-                                </label>
-                            </div>
-                            
-                            <div class="control-group">
-                                <h4>Harmonics</h4>
-                                <label>
-                                    Number of Harmonics: <input type="range" id="harmonicsSlider" min="1" max="20" value="5">
-                                    <span id="harmonicsValue">5</span>
-                                </label>
-                            </div>
-                            
-                            <div class="control-group">
-                                <h4>View Options</h4>
-                                <label><input type="checkbox" id="showTimeView" checked> Show Time Domain</label>
-                                <label><input type="checkbox" id="showFreqView" checked> Show Frequency Domain</label>
-                            </div>
-                        </div>
-                        
-                        <div class="demo-description">
-                            <p>This interactive demonstration allows you to explore how different waveforms can be decomposed into their frequency components using the Fourier Transform. Adjust the parameters to see how changes in the time domain affect the frequency spectrum and vice versa.</p>
-                            <p>The top graph shows the signal in the time domain, while the bottom graph displays its frequency spectrum. Notice how complex waveforms like square and sawtooth waves require more harmonics to accurately represent their shape.</p>
-                        </div>
-                    </div>
+                <p>Harmonics are frequency components that are integer multiples of a fundamental frequency. For a given fundamental frequency f₀:</p>
+                
+                <ul>
+                    <li>The first harmonic is the fundamental frequency (f₀) itself</li>
+                    <li>The second harmonic is twice the fundamental frequency (2f₀)</li>
+                    <li>The third harmonic is three times the fundamental frequency (3f₀)</li>
+                    <li>And so on...</li>
+                </ul>
+                
+                <div class="image-placeholder">
+                    <p><strong>Image Description:</strong> A diagram showing the first 5 harmonics of a fundamental frequency, each displayed as a separate sine wave with increasing frequency</p>
+                    <p><small>Note: This represents where an image of harmonics would appear.</small></p>
+                </div>
+                
+                <h3>Overtones vs. Harmonics</h3>
+                
+                <p>While these terms are sometimes used interchangeably, there is a technical distinction:</p>
+                
+                <ul>
+                    <li><strong>Harmonics</strong> refer to integer multiples of the fundamental frequency</li>
+                    <li><strong>Overtones</strong> refer to any frequency higher than the fundamental, numbered sequentially from the first frequency above the fundamental</li>
+                </ul>
+                
+                <p>In idealized systems (like stretched strings and air columns), overtones are harmonics. However, in some systems (like drums, bells, or non-ideal strings), overtones may not be exact harmonics, leading to inharmonic spectra.</p>
+                
+                <div class="math-formula">
+                    <p>Harmonic series: f₀, 2f₀, 3f₀, 4f₀, 5f₀, ...</p>
+                    <p>Overtone series: (1st overtone = 2f₀), (2nd overtone = 3f₀), ...</p>
+                </div>
+                
+                <h3>Harmonic Synthesis: Building Complex Waveforms</h3>
+                
+                <p>According to Fourier theory, any periodic waveform can be constructed by adding sine waves of appropriate frequencies, amplitudes, and phases. This is the fundamental principle of additive synthesis in audio.</p>
+                
+                <h4>Example: Square Wave Synthesis</h4>
+                
+                <p>A square wave can be synthesized by adding only odd harmonics with specific amplitudes:</p>
+                
+                <div class="math-formula">
+                    <p>Square wave = (4/π) × [sin(2πf₀t) + (1/3)sin(2π(3f₀)t) + (1/5)sin(2π(5f₀)t) + ...]</p>
+                </div>
+                
+                <div class="image-placeholder">
+                    <p><strong>Image Description:</strong> A visual representation showing how adding successive odd harmonics approximates a square wave</p>
+                    <p><small>Note: This represents where an image of square wave synthesis would appear.</small></p>
+                </div>
+                
+                <h3>Harmonics in Musical Instruments</h3>
+                
+                <p>Different musical instruments produce different harmonic structures, which gives them their characteristic timbres or "tone colors":</p>
+                
+                <ul>
+                    <li><strong>String instruments:</strong> Produce a rich harmonic series, with the mix of harmonics varying based on where and how the string is played</li>
+                    <li><strong>Wind instruments:</strong> Typically emphasize certain harmonics based on their physical design (tube length, shape, material)</li>
+                    <li><strong>Percussion instruments:</strong> Often produce inharmonic overtones due to complex vibration modes</li>
+                </ul>
+                
+                <div class="image-placeholder">
+                    <p><strong>Image Description:</strong> Frequency spectra of different instruments playing the same note, showing their unique harmonic fingerprints</p>
+                    <p><small>Note: This represents where an image of instrument spectra would appear.</small></p>
                 </div>
                 
                 <h3>Applications in Audiovisual Media</h3>
                 
-                <p>The Fourier Transform has numerous applications in audiovisual media:</p>
-                
+                <h4>Audio Applications</h4>
                 <ul>
-                    <li><strong>Audio Processing:</strong> Equalizers, filters, and effects processors use the Fourier Transform to manipulate specific frequency components of audio signals.</li>
-                    <li><strong>Image Processing:</strong> The 2D Fourier Transform is used for image filtering, compression (like JPEG), and pattern recognition.</li>
-                    <li><strong>Video Compression:</strong> Modern video codecs use transforms similar to the Fourier Transform (like the Discrete Cosine Transform) to compress video data efficiently.</li>
-                    <li><strong>Spectral Analysis:</strong> Analyzing the frequency content of sounds helps in identifying instruments, voices, and acoustic properties of environments.</li>
+                    <li><strong>Sound synthesis:</strong> Creating realistic instrument sounds by modeling their harmonic structures</li>
+                    <li><strong>Audio effects:</strong> Many effects like distortion and harmonic exciters manipulate the harmonic content</li>
+                    <li><strong>Equalization:</strong> Targeted manipulation of frequency ranges that correspond to specific harmonics</li>
+                    <li><strong>Audio analysis:</strong> Identifying sound sources based on their harmonic signatures</li>
                 </ul>
                 
-                <p>Understanding the Fourier Transform provides a powerful framework for analyzing and processing signals in various domains of audiovisual media production.</p>
+                <h4>Visual Applications</h4>
+                <ul>
+                    <li><strong>Audio visualization:</strong> Creating visual representations of audio based on harmonic content</li>
+                    <li><strong>Image processing:</strong> Similar principles apply to the spatial frequency domain in images</li>
+                </ul>
+                
+                <h3>Measuring Harmonic Distortion</h3>
+                
+                <p>In audio systems, unwanted harmonics introduced by non-linear processing are measured as harmonic distortion. Total Harmonic Distortion (THD) is a common specification for audio equipment, indicating the sum of all harmonic distortion components relative to the fundamental.</p>
+                
+                <div class="math-formula">
+                    <p>THD = √(V₂² + V₃² + V₄² + ... + Vₙ²) / V₁</p>
+                </div>
+                
+                <p>Where V₁ is the amplitude of the fundamental, and V₂, V₃, etc. are the amplitudes of the harmonics.</p>
                 
                 <div class="navigation-buttons">
-                    <a href="harmonics_overtones.html" class="nav-btn">← Previous: Harmonics and Overtones</a>
-                    <a href="frequency_spectrum.html" class="nav-btn">Next: Frequency Spectrum →</a>
+                    <a href="periodic_signals.html" class="nav-btn">← Previous: Periodic Signals</a>
+                    <a href="fourier_demo.html" class="nav-btn">Next: Fourier Transform →</a>
                 </div>
             </main>
         </div>

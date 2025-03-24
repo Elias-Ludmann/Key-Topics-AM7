@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'self' https://vonpgqcn.manus.space https://vonpgqcn.usercontents.app">
-    <title>Signal Processing - Fourier Transform Demo</title>
+    <!-- Content Security Policy moved to HTTP headers for better security -->
+    <title>Signal Processing - Periodic Signals and Waveforms</title>
     <style>
         :root {
             --primary-color: #1A365D;
@@ -154,6 +154,15 @@
             margin-bottom: 1.5rem;
         }
         
+        .main-content ul, .main-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .main-content li {
+            margin-bottom: 0.5rem;
+        }
+        
         .demo-container {
             margin: 2rem 0;
             padding: 1.5rem;
@@ -165,81 +174,6 @@
             font-family: 'Montserrat', sans-serif;
             color: var(--primary-color);
             margin-bottom: 1rem;
-        }
-        
-        .fourier-demo {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .demo-canvas {
-            width: 100%;
-            height: 300px;
-            background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1.5rem;
-        }
-        
-        .demo-controls {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            width: 100%;
-            margin-bottom: 1.5rem;
-        }
-        
-        .control-group {
-            background-color: white;
-            padding: 1rem;
-            border-radius: 5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .control-group h4 {
-            font-family: 'Montserrat', sans-serif;
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
-        }
-        
-        .control-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-        
-        .control-group input[type="range"] {
-            width: 100%;
-        }
-        
-        .control-group input[type="number"] {
-            width: 60px;
-            padding: 0.3rem;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-        }
-        
-        .demo-btn {
-            padding: 0.5rem 1rem;
-            background-color: var(--secondary-color);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-top: 0.5rem;
-        }
-        
-        .demo-btn:hover {
-            background-color: var(--primary-color);
-        }
-        
-        .demo-description {
-            background-color: white;
-            padding: 1.5rem;
-            border-radius: 5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
         .navigation-buttons {
@@ -260,6 +194,21 @@
         
         .nav-btn:hover {
             background-color: var(--secondary-color);
+        }
+        
+        .image-placeholder {
+            border: 1px dashed #ccc;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: center;
+            background-color: #f8f9fa;
+        }
+        
+        .math-formula {
+            font-family: 'Times New Roman', serif;
+            text-align: center;
+            margin: 1.5rem 0;
+            font-size: 1.2rem;
         }
         
         footer {
@@ -349,9 +298,9 @@
                 <h3>Module Topics</h3>
                 <ul class="topic-list">
                     <li><a href="signals_intro.html">Introduction to Signals</a></li>
-                    <li><a href="periodic_signals.html">Periodic Signals and Waveforms</a></li>
+                    <li class="active"><a href="periodic_signals.html">Periodic Signals and Waveforms</a></li>
                     <li><a href="harmonics_overtones.html">Harmonics and Overtones</a></li>
-                    <li class="active"><a href="fourier_demo.html">Fourier Transform</a></li>
+                    <li><a href="fourier_demo.html">Fourier Transform</a></li>
                     <li><a href="frequency_spectrum.html">Frequency Spectrum Analysis</a></li>
                     <li><a href="line_spectrum.html">Line Spectrum Characteristics</a></li>
                     <li><a href="rectangular_impulses.html">Rectangular Impulses</a></li>
@@ -360,76 +309,106 @@
             </aside>
             
             <main class="main-content">
-                <h2>Fourier Transform</h2>
+                <h2>Periodic Signals and Waveforms</h2>
                 
-                <p>The Fourier Transform is a mathematical technique that decomposes a signal into its constituent frequencies. Named after the French mathematician Jean-Baptiste Joseph Fourier, this transform is fundamental to understanding how complex signals can be represented as a sum of simple sinusoidal components.</p>
+                <p>Periodic signals are fundamental to understanding audio and visual systems. A periodic signal repeats itself exactly after a fixed time period, making it a crucial concept in signal processing.</p>
                 
-                <p>In audio and video processing, the Fourier Transform allows us to convert signals from the time domain (how the signal changes over time) to the frequency domain (what frequencies are present in the signal). This transformation provides insights into the spectral content of signals, which is crucial for tasks like filtering, compression, and analysis.</p>
+                <h3>Definition of Periodic Signals</h3>
                 
-                <div class="demo-container">
-                    <h3>Interactive Fourier Transform Demonstration</h3>
-                    
-                    <div class="fourier-demo">
-                        <canvas id="fourierCanvas" class="demo-canvas"></canvas>
-                        
-                        <div class="demo-controls">
-                            <div class="control-group">
-                                <h4>Waveform Type</h4>
-                                <select id="waveformType" class="demo-select">
-                                    <option value="sine">Sine Wave</option>
-                                    <option value="square">Square Wave</option>
-                                    <option value="sawtooth">Sawtooth Wave</option>
-                                    <option value="triangle">Triangle Wave</option>
-                                </select>
-                                <button id="updateWaveform" class="demo-btn">Update Waveform</button>
-                            </div>
-                            
-                            <div class="control-group">
-                                <h4>Fundamental Frequency</h4>
-                                <label>
-                                    Frequency: <input type="range" id="frequencySlider" min="1" max="20" value="1">
-                                    <span id="frequencyValue">1 Hz</span>
-                                </label>
-                            </div>
-                            
-                            <div class="control-group">
-                                <h4>Harmonics</h4>
-                                <label>
-                                    Number of Harmonics: <input type="range" id="harmonicsSlider" min="1" max="20" value="5">
-                                    <span id="harmonicsValue">5</span>
-                                </label>
-                            </div>
-                            
-                            <div class="control-group">
-                                <h4>View Options</h4>
-                                <label><input type="checkbox" id="showTimeView" checked> Show Time Domain</label>
-                                <label><input type="checkbox" id="showFreqView" checked> Show Frequency Domain</label>
-                            </div>
-                        </div>
-                        
-                        <div class="demo-description">
-                            <p>This interactive demonstration allows you to explore how different waveforms can be decomposed into their frequency components using the Fourier Transform. Adjust the parameters to see how changes in the time domain affect the frequency spectrum and vice versa.</p>
-                            <p>The top graph shows the signal in the time domain, while the bottom graph displays its frequency spectrum. Notice how complex waveforms like square and sawtooth waves require more harmonics to accurately represent their shape.</p>
-                        </div>
-                    </div>
+                <p>A signal x(t) is periodic if there exists a positive constant T such that:</p>
+                
+                <div class="math-formula">
+                    x(t) = x(t + T) for all t
+                </div>
+                
+                <p>The smallest value of T for which this equality holds is called the <strong>fundamental period</strong> of the signal. The reciprocal of the period is the <strong>fundamental frequency</strong> (f = 1/T), measured in Hertz (Hz).</p>
+                
+                <div class="image-placeholder">
+                    <p><strong>Image Description:</strong> A periodic signal showing three complete cycles, with the period T clearly marked</p>
+                    <p><small>Note: This represents where an image of a periodic signal would appear.</small></p>
+                </div>
+                
+                <h3>Common Periodic Waveforms</h3>
+                
+                <p>Several standard periodic waveforms are frequently encountered in audiovisual media applications:</p>
+                
+                <h4>Sine Wave</h4>
+                <p>The simplest periodic signal is the sine wave, described by:</p>
+                <div class="math-formula">
+                    x(t) = A·sin(2πft + φ)
+                </div>
+                <p>Where A is the amplitude, f is the frequency, and φ is the phase.</p>
+                
+                <div class="image-placeholder">
+                    <p><strong>Image Description:</strong> A sine wave with key parameters labeled (amplitude, period, phase)</p>
+                    <p><small>Note: This represents where an image of a sine wave would appear.</small></p>
+                </div>
+                
+                <h4>Square Wave</h4>
+                <p>A square wave alternates between two fixed values:</p>
+                <div class="math-formula">
+                    x(t) = A·sgn(sin(2πft))
+                </div>
+                <p>Where sgn is the signum function that outputs +1 for positive input and -1 for negative input.</p>
+                
+                <div class="image-placeholder">
+                    <p><strong>Image Description:</strong> A square wave showing abrupt transitions between high and low states</p>
+                    <p><small>Note: This represents where an image of a square wave would appear.</small></p>
+                </div>
+                
+                <h4>Triangle Wave</h4>
+                <p>A triangle wave increases and decreases linearly between peak values:</p>
+                <div class="math-formula">
+                    x(t) = (2A/π)·arcsin(sin(2πft))
+                </div>
+                
+                <div class="image-placeholder">
+                    <p><strong>Image Description:</strong> A triangle wave showing linear ramps between peak values</p>
+                    <p><small>Note: This represents where an image of a triangle wave would appear.</small></p>
+                </div>
+                
+                <h4>Sawtooth Wave</h4>
+                <p>A sawtooth wave increases linearly and then drops suddenly:</p>
+                <div class="math-formula">
+                    x(t) = 2A(t/T - ⌊t/T + 1/2⌋)
+                </div>
+                <p>Where ⌊x⌋ denotes the floor function (greatest integer less than or equal to x).</p>
+                
+                <div class="image-placeholder">
+                    <p><strong>Image Description:</strong> A sawtooth wave showing linear rise and sudden drop</p>
+                    <p><small>Note: This represents where an image of a sawtooth wave would appear.</small></p>
                 </div>
                 
                 <h3>Applications in Audiovisual Media</h3>
                 
-                <p>The Fourier Transform has numerous applications in audiovisual media:</p>
-                
+                <h4>Audio Applications</h4>
                 <ul>
-                    <li><strong>Audio Processing:</strong> Equalizers, filters, and effects processors use the Fourier Transform to manipulate specific frequency components of audio signals.</li>
-                    <li><strong>Image Processing:</strong> The 2D Fourier Transform is used for image filtering, compression (like JPEG), and pattern recognition.</li>
-                    <li><strong>Video Compression:</strong> Modern video codecs use transforms similar to the Fourier Transform (like the Discrete Cosine Transform) to compress video data efficiently.</li>
-                    <li><strong>Spectral Analysis:</strong> Analyzing the frequency content of sounds helps in identifying instruments, voices, and acoustic properties of environments.</li>
+                    <li><strong>Music synthesis:</strong> Different waveforms produce different timbres</li>
+                    <li><strong>Audio oscillators:</strong> Generate test signals for audio equipment</li>
+                    <li><strong>Sound effects:</strong> Create various audio effects and textures</li>
                 </ul>
                 
-                <p>Understanding the Fourier Transform provides a powerful framework for analyzing and processing signals in various domains of audiovisual media production.</p>
+                <h4>Video Applications</h4>
+                <ul>
+                    <li><strong>Sync signals:</strong> Timing and synchronization in video systems</li>
+                    <li><strong>Video test patterns:</strong> Generated using various waveforms</li>
+                    <li><strong>Visual effects:</strong> Creating patterns and transitions</li>
+                </ul>
+                
+                <h3>Properties of Periodic Signals</h3>
+                
+                <h4>Energy and Power</h4>
+                <p>Periodic signals have finite average power but infinite energy. The average power is given by:</p>
+                <div class="math-formula">
+                    P = (1/T)∫<sub>0</sub><sup>T</sup> |x(t)|<sup>2</sup> dt
+                </div>
+                
+                <h4>Frequency Domain Representation</h4>
+                <p>Any periodic signal can be represented as a sum of sinusoidal components (sine and cosine functions) with frequencies that are integer multiples of the fundamental frequency. This representation is known as a Fourier series, which we'll explore in detail in the upcoming Fourier Transform lesson.</p>
                 
                 <div class="navigation-buttons">
-                    <a href="harmonics_overtones.html" class="nav-btn">← Previous: Harmonics and Overtones</a>
-                    <a href="frequency_spectrum.html" class="nav-btn">Next: Frequency Spectrum →</a>
+                    <a href="signals_intro.html" class="nav-btn">← Previous: Introduction to Signals</a>
+                    <a href="harmonics_overtones.html" class="nav-btn">Next: Harmonics and Overtones →</a>
                 </div>
             </main>
         </div>

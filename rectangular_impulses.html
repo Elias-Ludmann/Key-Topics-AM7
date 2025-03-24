@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Content Security Policy moved to HTTP headers for better security -->
+    <title>Signal Processing - Rectangular Impulses</title>
+    <style>
+        :root {
+            --primary-color: #1A365D;
+            --secondary-color: #2A9D8F;
+            --accent-color: #F4A261;
+            --background-color: #F8F9FA;
+            --text-color: #333333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .module-header {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+        }
+        
+        .module-header h1 {
+            font-family: 'Montserrat', sans-serif;
+            margin-bottom: 1rem;
+        }
+        
+        .module-content {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: 2rem;
+        }
+        
+        .sidebar {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+        
+        .sidebar h3 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        
+        .topic-list {
+            list-style: none;
+        }
+        
+        .topic-list li {
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .topic-list li:hover {
+            background-color: var(--background-color);
+        }
+        
+        .topic-list li.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .topic-list a {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .main-content {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .main-content h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        
+        .main-content p {
+            margin-bottom: 1.5rem;
+        }
+        
+        .main-content ul, .main-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .main-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .demo-container {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background-color: var(--background-color);
+            border-radius: 10px;
+        }
+        
+        .demo-container h3 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .nav-btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .nav-btn:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .image-placeholder {
+            border: 1px dashed #ccc;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: center;
+            background-color: #f8f9fa;
+        }
+        
+        .math-formula {
+            font-family: 'Times New Roman', serif;
+            text-align: center;
+            margin: 1.5rem 0;
+            font-size: 1.2rem;
+        }
+        
+        .formula-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid var(--secondary-color);
+            padding: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-section h3 {
+            font-family: 'Montserrat', sans-serif;
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-section a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .footer-section a:hover {
+            text-decoration: underline;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .module-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">AVMedia Hub</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#">Modules</a></li>
+                <li><a href="#">Learning Paths</a></li>
+                <li><a href="#">Resources</a></li>
+                <li><a href="#">Dashboard</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <div class="module-header">
+            <h1>Module 3: Signal Processing Fundamentals</h1>
+            <p>Learn the mathematical foundations of signal processing essential for understanding audio and video systems.</p>
+        </div>
+        
+        <div class="module-content">
+            <aside class="sidebar">
+                <h3>Module Topics</h3>
+                <ul class="topic-list">
+                    <li><a href="signals_intro.html">Introduction to Signals</a></li>
+                    <li><a href="periodic_signals.html">Periodic Signals and Waveforms</a></li>
+                    <li><a href="harmonics_overtones.html">Harmonics and Overtones</a></li>
+                    <li><a href="fourier_demo.html">Fourier Transform</a></li>
+                    <li><a href="frequency_spectrum.html">Frequency Spectrum Analysis</a></li>
+                    <li><a href="line_spectrum.html">Line Spectrum Characteristics</a></li>
+                    <li class="active"><a href="rectangular_impulses.html">Rectangular Impulses</a></li>
+                    <li><a href="signal_processing_quiz.html">Module Quiz</a></li>
+                </ul>
+            </aside>
+            
+            <main class="main-content">
+                <h2>Rectangular Impulses</h2>
+                
+                <p>Rectangular impulses, also known as rectangular pulses or box functions, are fundamental building blocks in signal processing. They represent signals that are "on" for a specific duration and "off" otherwise. Despite their simple appearance, rectangular impulses have profound importance in both theoretical and practical signal processing.</p>
+                
+                <h3>Definition and Mathematical Representation</h3>
+                
+                <p>A rectangular impulse is mathematically defined as a function that has a constant, non-zero value over a finite interval and is zero elsewhere.</p>
+                
+                <div class="formula-box">
+                    <p>A rectangular impulse of width τ and amplitude A can be defined as:</p>
+                    <div class="math-formula">
+                        <p>rect(t) = { A, if |t| ≤ τ/2<br>0, if |t| > τ/2 }</p>
+                    </div>
+                    <p>This function equals A when t is between -τ/2 and τ/2, and equals zero elsewhere.</p>
+                </div>
+                
+                <div class="image-placeholder">
+                    <p><strong>Image Description:</strong> A rectangular pulse function with width τ and amplitude A, centered at t=0</p>
+                    <p><small>Note: This represents where an image of rectangular pulse would appear.</small></p>
+                </div>
+                
+                <h3>The Unit Rectangle Function</h3>
+                
+                <p>The unit rectangle function is a special case where A = 1 and τ = 1. This function is commonly used as a reference from which other rectangular pulses can be derived through scaling and shifting operations.</p>
+                
+                <h3>Frequency Domain Representation</h3>
+                
+                <p>One of the most important aspects of rectangular impulses is their frequency domain representation. The Fourier transform of a rectangular pulse is a sinc function (sin(x)/x), which has significant implications for signal processing.</p>
+                
+                <div class="formula-box">
+                    <p>For a rectangular pulse of width τ and amplitude A:</p>
+                    <div class="math-formula">
+                        <p>F{rect(t/τ)} = A·τ·sinc(τf)</p>
+                    </div>
+                    <p>Where sinc(x) = sin(πx)/(πx)</p>
+                </div>
+                
+                <div class="image-placeholder">
+                    <p><strong>Image Description:</strong> The time domain rectangular pulse (left) and its frequency domain representation as a sinc function (right)</p>
+                    <p><small>Note: This represents where an image showing time and frequency domains would appear.</small></p>
+                </div>
+                
+                <h3>Key Properties of Rectangular Impulses</h3>
+                
+                <h4>1. Bandwidth Considerations</h4>
+                <p>The width of a rectangular pulse in the time domain is inversely proportional to its bandwidth in the frequency domain. This is a manifestation of the time-frequency duality principle. A shorter pulse in time has a wider frequency spread (more bandwidth) and vice versa.</p>
+                
+                <div class="math-formula">
+                    <p>Bandwidth ∝ 1/τ</p>
+                </div>
+                
+                <h4>2. Energy and Power</h4>
+                <p>The energy of a rectangular pulse is proportional to both its amplitude squared and its duration:</p>
+                
+                <div class="math-formula">
+                    <p>Energy = A²·τ</p>
+                </div>
+                
+                <h4>3. The Rectangular Train</h4>
+                <p>A periodic sequence of rectangular pulses forms a rectangular pulse train. The spectrum of such a train is a series of sinc functions centered at multiples of the repetition frequency.</p>
+                
+                <div class="image-placeholder">
+                    <p><strong>Image Description:</strong> A rectangular pulse train in time domain (top) and its line spectrum in frequency domain (bottom)</p>
+                    <p><small>Note: This represents where an image of a pulse train would appear.</small></p>
+                </div>
+                
+                <h3>Applications in Audiovisual Media</h3>
+                
+                <h4>Sampling and Quantization</h4>
+                <p>Rectangular impulses are fundamental to understanding the sampling process in digital signal processing. When an analog signal is sampled, it can be mathematically represented as the product of the original signal and a train of impulses (Dirac delta functions), which is then convolved with a rectangular pulse to produce the held samples.</p>
+                
+                <h4>Pulse Width Modulation (PWM)</h4>
+                <p>In PWM, the width of rectangular pulses is varied to encode information. This technique is widely used in audio amplification, motor control, and power delivery systems.</p>
+                
+                <h4>Digital Filter Design</h4>
+                <p>The sinc function, derived from the rectangular pulse, is the ideal low-pass filter response. Understanding rectangular impulses helps in designing practical digital filters.</p>
+                
+                <div class="image-placeholder">
+                    <p><strong>Image Description:</strong> Ideal low-pass filter frequency response (a sinc function) derived from a rectangular impulse</p>
+                    <p><small>Note: This represents where an image of filter response would appear.</small></p>
+                </div>
+                
+                <h4>Image Processing</h4>
+                <p>In 2D image processing, rectangular impulses are used to define spatial windows for operations like filtering, edge detection, and feature extraction. The 2D rectangular function and its Fourier transform (the 2D sinc function) are key concepts.</p>
+                
+                <h4>Audio Processing</h4>
+                <p>In audio, rectangular windowing (also known as the boxcar window) is used in spectral analysis, though it's often replaced by smoother windows like Hamming or Hann to reduce spectral leakage.</p>
+                
+                <h3>The Gibbs Phenomenon</h3>
+                
+                <p>When reconstructing a rectangular impulse from its frequency components (sinc function), an interesting artifact called the Gibbs phenomenon occurs. This manifests as oscillatory behavior or "ringing" near the discontinuities of the rectangular pulse, even as more frequency components are added to the reconstruction.</p>
+                
+                <div class="image-placeholder">
+                    <p><strong>Image Description:</strong> Illustration of the Gibbs phenomenon showing oscillations at the edges of a reconstructed rectangular pulse</p>
+                    <p><small>Note: This represents where an image of Gibbs phenomenon would appear.</small></p>
+                </div>
+                
+                <p>The Gibbs phenomenon has important implications for signal processing, particularly in audio where it can manifest as pre-ringing and post-ringing artifacts around transients when using certain types of filters.</p>
+                
+                <h3>Practical Considerations</h3>
+                
+                <p>In practical applications, truly rectangular impulses are rarely achievable due to physical limitations. However, understanding the theoretical properties of ideal rectangular impulses provides valuable insights into system behavior and limitations.</p>
+                
+                <ul>
+                    <li><strong>Rise and fall times:</strong> Real electronic systems have finite rise and fall times, creating trapezoidal rather than rectangular pulses</li>
+                    <li><strong>Bandwidth limitations:</strong> The infinite bandwidth required for perfect rectangular edges is never available in real systems</li>
+                    <li><strong>Windowing functions:</strong> In spectral analysis, smoother alternatives to the rectangular window are often preferred to reduce spectral leakage</li>
+                </ul>
+                
+                <div class="navigation-buttons">
+                    <a href="line_spectrum.html" class="nav-btn">← Previous: Line Spectrum Characteristics</a>
+                    <a href="signal_processing_quiz.html" class="nav-btn">Next: Module Quiz →</a>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About</h3>
+                <p>This interactive learning platform is designed for first-semester students in Audiovisuelle Medien at Hochschule der Medien.</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#">Modules</a></li>
+                    <li><a href="#">Learning Paths</a></li>
+                    <li><a href="#">Resources</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>HdM Resources</h3>
+                <ul>
+                    <li><a href="https://www.hdm-stuttgart.de/" target="_blank">HdM Website</a></li>
+                    <li><a href="https://www.hdm-stuttgart.de/studienangebot/studiengaenge/steckbrief?sgang_ID=550013" target="_blank">Audiovisuelle Medien</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>&copy; 2025 Audiovisuelle Medien Learning Hub | Hochschule der Medien Stuttgart</p>
+        </div>
+    </footer>
+</body>
+</html>
