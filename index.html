@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'self' https://vonpgqcn.manus.space https://vonpgqcn.usercontents.app">
+    <title>Audiovisuelle Medien Learning Hub</title>
+    <style>
+        :root {
+            --primary-color: #1A365D;
+            --secondary-color: #2A9D8F;
+            --accent-color: #F4A261;
+            --background-color: #F8F9FA;
+            --text-color: #333333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+        
+        .hero {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #E76F51;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+        }
+        
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .module-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .module-card-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.5rem;
+        }
+        
+        .module-card-header h3 {
+            font-family: 'Montserrat', sans-serif;
+            margin-bottom: 0.5rem;
+        }
+        
+        .module-card-body {
+            padding: 1.5rem;
+        }
+        
+        .module-card-body p {
+            margin-bottom: 1rem;
+        }
+        
+        .learning-paths {
+            margin-top: 4rem;
+        }
+        
+        .paths-container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+        
+        .path-card {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .path-card h3 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        
+        .path-steps {
+            list-style: none;
+        }
+        
+        .path-steps li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .path-steps li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--secondary-color);
+        }
+        
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-section h3 {
+            font-family: 'Montserrat', sans-serif;
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-section a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .footer-section a:hover {
+            text-decoration: underline;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .paths-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">AVMedia Hub</div>
+            <ul class="nav-links">
+                <li><a href="#modules">Learning Modules</a></li>
+                <li><a href="#paths">Learning Paths</a></li>
+                <li><a href="#resources">Resources</a></li>
+                <li><a href="#dashboard">Dashboard</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="hero">
+        <h1>Audiovisuelle Medien Learning Hub</h1>
+        <p>Welcome to your interactive learning platform for Audiovisual Media studies at Hochschule der Medien. Explore the modules, follow your preferred learning path, and enhance your understanding through interactive elements.</p>
+        <a href="#modules" class="btn">Get Started</a>
+    </section>
+    
+    <section id="modules" class="container">
+        <h2 class="section-title">Learning Modules</h2>
+        <div class="modules-grid">
+            <div class="module-card">
+                <div class="module-card-header">
+                    <h3>Visual Perception</h3>
+                </div>
+                <div class="module-card-body">
+                    <p>Explore how humans perceive visual information, from the structure of the eye to color perception and adaptation mechanisms.</p>
+                    <a href="#" class="btn">Explore Module</a>
+                </div>
+            </div>
+            
+            <div class="module-card">
+                <div class="module-card-header">
+                    <h3>Physics of Light and Sound</h3>
+                </div>
+                <div class="module-card-body">
+                    <p>Understand the fundamental physics principles that underpin audiovisual media, focusing on wave properties and optical phenomena.</p>
+                    <a href="#" class="btn">Explore Module</a>
+                </div>
+            </div>
+            
+            <div class="module-card">
+                <div class="module-card-header">
+                    <h3>Signal Processing</h3>
+                </div>
+                <div class="module-card-body">
+                    <p>Learn the mathematical foundations of signal processing essential for understanding audio and video systems.</p>
+                    <a href="#" class="btn">Explore Module</a>
+                </div>
+            </div>
+            
+            <div class="module-card">
+                <div class="module-card-header">
+                    <h3>Audio Technology</h3>
+                </div>
+                <div class="module-card-body">
+                    <p>Discover the technical aspects of audio recording, processing, and reproduction in media production.</p>
+                    <a href="#" class="btn">Explore Module</a>
+                </div>
+            </div>
+            
+            <div class="module-card">
+                <div class="module-card-header">
+                    <h3>Image and Video Technology</h3>
+                </div>
+                <div class="module-card-body">
+                    <p>Explore the technical foundations of digital image and video systems used in modern media production.</p>
+                    <a href="#" class="btn">Explore Module</a>
+                </div>
+            </div>
+            
+            <div class="module-card">
+                <div class="module-card-header">
+                    <h3>Programming for Media</h3>
+                </div>
+                <div class="module-card-body">
+                    <p>Learn programming concepts specifically relevant to audiovisual media applications using Python.</p>
+                    <a href="#" class="btn">Explore Module</a>
+                </div>
+            </div>
+            
+            <div class="module-card">
+                <div class="module-card-header">
+                    <h3>Electrical Engineering</h3>
+                </div>
+                <div class="module-card-body">
+                    <p>Understand the essential electrical engineering concepts needed to work with audiovisual equipment.</p>
+                    <a href="#" class="btn">Explore Module</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="paths" class="container learning-paths">
+        <h2 class="section-title">Learning Paths</h2>
+        <div class="paths-container">
+            <div class="path-card">
+                <h3>Technical Focus Path</h3>
+                <ul class="path-steps">
+                    <li>Physics of Light and Sound</li>
+                    <li>Electrical Engineering</li>
+                    <li>Signal Processing</li>
+                    <li>Audio Technology</li>
+                    <li>Image and Video Technology</li>
+                    <li>Programming for Media</li>
+                    <li>Visual Perception</li>
+                </ul>
+                <p>Ideal for students more interested in the technical engineering aspects.</p>
+                <a href="#" class="btn">Follow This Path</a>
+            </div>
+            
+            <div class="path-card">
+                <h3>Creative Focus Path</h3>
+                <ul class="path-steps">
+                    <li>Visual Perception</li>
+                    <li>Image and Video Technology</li>
+                    <li>Audio Technology</li>
+                    <li>Signal Processing</li>
+                    <li>Physics of Light and Sound</li>
+                    <li>Electrical Engineering</li>
+                    <li>Programming for Media</li>
+                </ul>
+                <p>Perfect for students more interested in the creative and perceptual aspects.</p>
+                <a href="#" class="btn">Follow This Path</a>
+            </div>
+            
+            <div class="path-card">
+                <h3>Balanced Approach</h3>
+                <ul class="path-steps">
+                    <li>Visual Perception</li>
+                    <li>Physics of Light and Sound</li>
+                    <li>Signal Processing</li>
+                    <li>Audio Technology</li>
+                    <li>Image and Video Technology</li>
+                    <li>Programming for Media</li>
+                    <li>Electrical Engineering</li>
+                </ul>
+                <p>A balanced approach covering perception fundamentals before moving to technical implementation.</p>
+                <a href="#" class="btn">Follow This Path</a>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About</h3>
+                <p>This interactive learning platform is designed for first-semester students in Audiovisuelle Medien at Hochschule der Medien.</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#modules">Learning Modules</a></li>
+                    <li><a href="#paths">Learning Paths</a></li>
+                    <li><a href="#resources">Resources</a></li>
+                    <li><a href="#dashboard">Dashboard</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>HdM Resources</h3>
+                <ul>
+                    <li><a href="https://www.hdm-stuttgart.de/" target="_blank">HdM Website</a></li>
+                    <li><a href="https://www.hdm-stuttgart.de/studienangebot/studiengaenge/steckbrief?sgang_ID=550013" target="_blank">Audiovisuelle Medien</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>&copy; 2025 Audiovisuelle Medien Learning Hub | Hochschule der Medien Stuttgart</p>
+        </div>
+    </footer>
+</body>
+</html>
